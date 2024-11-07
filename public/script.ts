@@ -1,5 +1,5 @@
 // Use an environment variable for the API base URL or default to localhost
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
+const API_BASE_URL = "https://justify-tt.onrender.com";
 
 let remainingWords = 80000; // Initial word limit
 let resetDate: string = ''; // Date when word limit resets
