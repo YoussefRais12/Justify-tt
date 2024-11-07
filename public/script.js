@@ -34,8 +34,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var remainingWords = 80000; // Initial limit
-var resetDate = ''; // Date when usage resets
+// Use an environment variable for the API base URL or default to localhost
+var API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
+var remainingWords = 80000; // Initial word limit
+var resetDate = ''; // Date when word limit resets
 function formatDate(dateString) {
     var date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -68,7 +70,7 @@ function generateToken() {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/token", {
+                    return [4 /*yield*/, fetch("".concat(API_BASE_URL, "/api/token"), {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ email: email })
@@ -79,13 +81,11 @@ function generateToken() {
                 case 3:
                     data = _a.sent();
                     if (response.ok) {
-                        // Hide the token but store it internally
-                        tokenInput.value = data.token;
+                        tokenInput.value = data.token; // Store token internally
                         outputDiv.textContent = "Token generated successfully!";
-                        // Show the justify section, reset remaining words, and set reset date
                         justifySection.style.display = "block";
-                        remainingWords = 80000;
-                        resetDate = new Date().toISOString().slice(0, 10); // Set the reset date to today
+                        remainingWords = 80000; // Reset word limit
+                        resetDate = new Date().toISOString().slice(0, 10); // Set reset date to today
                         updateUsageInfo();
                     }
                     else {
@@ -94,7 +94,7 @@ function generateToken() {
                     return [3 /*break*/, 5];
                 case 4:
                     error_1 = _a.sent();
-                    outputDiv.textContent = "Error generating token.";
+                    outputDiv.textContent = "Error generating token. Please try again.";
                     console.error(error_1);
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
@@ -118,7 +118,6 @@ function justifyText() {
                         alert("Please enter both token and text to justify.");
                         return [2 /*return*/];
                     }
-                    // Check if the word count exceeds remaining words before making the request
                     if (wordCount > remainingWords) {
                         outputDiv.textContent = "Erreur 402: Payment Required - Vous avez dépassé votre limite de mots quotidienne.";
                         return [2 /*return*/];
@@ -126,11 +125,11 @@ function justifyText() {
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 8, , 9]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/justify", {
+                    return [4 /*yield*/, fetch("".concat(API_BASE_URL, "/api/justify"), {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
-                                "Authorization": "Bearer " + token
+                                "Authorization": "Bearer ".concat(token)
                             },
                             body: JSON.stringify({ text: textToJustify })
                         })];
@@ -147,20 +146,19 @@ function justifyText() {
                     return [3 /*break*/, 7];
                 case 4:
                     if (!(response.status === 402)) return [3 /*break*/, 5];
-                    // Display specific error message for exceeded word limit
                     outputDiv.textContent = "Erreur 402: Payment Required - Vous avez dépassé votre limite de mots quotidienne.";
                     return [3 /*break*/, 7];
                 case 5:
                     _a = outputDiv;
-                    _b = "Error: ";
+                    _b = "Error: ".concat;
                     return [4 /*yield*/, response.text()];
                 case 6:
-                    _a.textContent = _b + (_c.sent());
+                    _a.textContent = _b.apply("Error: ", [_c.sent()]);
                     _c.label = 7;
                 case 7: return [3 /*break*/, 9];
                 case 8:
                     error_2 = _c.sent();
-                    outputDiv.textContent = "Error justifying text.";
+                    outputDiv.textContent = "Error justifying text. Please try again.";
                     console.error(error_2);
                     return [3 /*break*/, 9];
                 case 9: return [2 /*return*/];

@@ -1,5 +1,8 @@
-let remainingWords = 80000; // Initial limit
-let resetDate: string = ''; // Date when usage resets
+// Use an environment variable for the API base URL or default to localhost
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
+
+let remainingWords = 80000; // Initial word limit
+let resetDate: string = ''; // Date when word limit resets
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -32,7 +35,7 @@ async function generateToken() {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/token", {
+    const response = await fetch(`${API_BASE_URL}/api/token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })
@@ -40,20 +43,18 @@ async function generateToken() {
     const data = await response.json();
 
     if (response.ok) {
-      // Hide the token but store it internally
-      tokenInput.value = data.token;
+      tokenInput.value = data.token; // Store token internally
       outputDiv.textContent = "Token generated successfully!";
       
-      // Show the justify section, reset remaining words, and set reset date
       justifySection.style.display = "block";
-      remainingWords = 80000;
-      resetDate = new Date().toISOString().slice(0, 10); // Set the reset date to today
+      remainingWords = 80000; // Reset word limit
+      resetDate = new Date().toISOString().slice(0, 10); // Set reset date to today
       updateUsageInfo();
     } else {
       outputDiv.textContent = "Error: " + data.error;
     }
   } catch (error) {
-    outputDiv.textContent = "Error generating token.";
+    outputDiv.textContent = "Error generating token. Please try again.";
     console.error(error);
   }
 }
@@ -72,18 +73,17 @@ async function justifyText() {
     return;
   }
 
-  // Check if the word count exceeds remaining words before making the request
   if (wordCount > remainingWords) {
     outputDiv.textContent = "Erreur 402: Payment Required - Vous avez dépassé votre limite de mots quotidienne.";
     return;
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/justify", {
+    const response = await fetch(`${API_BASE_URL}/api/justify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ text: textToJustify })
     });
@@ -96,13 +96,12 @@ async function justifyText() {
       remainingWords -= wordCount;
       updateUsageInfo();
     } else if (response.status === 402) {
-      // Display specific error message for exceeded word limit
       outputDiv.textContent = "Erreur 402: Payment Required - Vous avez dépassé votre limite de mots quotidienne.";
     } else {
-      outputDiv.textContent = "Error: " + await response.text();
+      outputDiv.textContent = `Error: ${await response.text()}`;
     }
   } catch (error) {
-    outputDiv.textContent = "Error justifying text.";
+    outputDiv.textContent = "Error justifying text. Please try again.";
     console.error(error);
   }
 }
