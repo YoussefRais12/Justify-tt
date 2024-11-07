@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Tester</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>API Tester</h1>
+
+    <section>
+      <h2>Generate Token</h2>
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <button onclick="generateToken()">Generate Token</button>
+      <div class="output" id="tokenOutput"></div>
+    </section>
+
+    <section id="justifySection" style="display: none;">
+      <h2>Justify Text</h2>
+      <div id="usageInfo" class="usage-info">
+        <div class="usage-item">
+          <span class="usage-label">Remaining Words:</span>
+          <span id="remainingWords" class="usage-value"></span>
+        </div>
+        <div class="usage-item">
+          <span class="usage-label">Resets on:</span>
+          <span id="resetDate" class="usage-value"></span>
+        </div>
+      </div>
+      <textarea id="textToJustify" rows="5" placeholder="Enter text to justify" required></textarea>
+      <button onclick="justifyText()">Justify Text</button>
+      <div class="output" id="justifyOutput"></div>
+      <!-- Hidden input for storing token internally -->
+      <input type="hidden" id="token" />
+    </section>
+
+    <footer>
+      Made with <span class="heart">❤</span> By Youssef RAIES
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
