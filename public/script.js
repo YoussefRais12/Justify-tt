@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 // Use an environment variable for the API base URL or default to localhost
-var API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
+var API_BASE_URL = "https://justify-tt.onrender.com";
 var remainingWords = 80000; // Initial word limit
 var resetDate = ''; // Date when word limit resets
 function formatDate(dateString) {
