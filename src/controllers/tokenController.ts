@@ -12,8 +12,12 @@ export function generateTokenController(req: Request, res: Response): void {
   }
 
   const token = generateToken(email);
-  tokenWordCount[token] = 0;
-  console.log("Token stored in tokenWordCount after generation:", tokenWordCount);
+  
+  tokenWordCount[token] = {
+    count: 0,
+    date: new Date().toISOString().slice(0, 10) // Set today's date in YYYY-MM-DD format
+  };
 
+  console.log("Token stored in tokenWordCount after generation:", tokenWordCount);
   res.json({ token });
 }
